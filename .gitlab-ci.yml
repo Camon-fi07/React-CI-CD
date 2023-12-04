@@ -19,6 +19,9 @@ build-job:
 lint-test-job:
   stage: test
   image: node:latest
+  tags:
+    - react
+    - ts
   script:
     - npm install
     - npm run lint
@@ -26,7 +29,8 @@ lint-test-job:
 deploy-job:
   stage: deploy
   tags:
-    - deploy
+    - react
+    - ts
   script:
     - npm install
     - npm run deploy
