@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - deploy
 
 build-job:
   stage: build
@@ -21,3 +22,13 @@ lint-test-job:
   script:
     - npm install
     - npm run lint
+
+deploy-job:
+  stage: deploy
+  tags:
+    - deploy
+  scripts:
+    - npm install
+    - npm run deploy
+  only:
+    - master
