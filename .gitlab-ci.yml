@@ -29,8 +29,7 @@ lint-test-job:
 deploy-job:
   stage: deploy
   tags:
-    - react
-    - ts
+    - deploy
   script:
     - npm install
     - npm run preview
