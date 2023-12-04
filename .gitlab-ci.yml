@@ -35,9 +35,5 @@ deploy-job:
     - deploy
   script:
     - npm install
-    - npm run preview
-  environment:
-    name: review
-    url: https://example.com
-  after_script:
-    - echo "f"
+    - npm run preview &
+    - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
