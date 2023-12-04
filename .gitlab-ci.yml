@@ -32,7 +32,7 @@ deploy-job:
     - deploy
   script:
     - npm install
-    - npm run preview
+    - npm run preview &
     - apk add --update git curl
     - wget https://raw.githubusercontent.com/DiscordHooks/gitlab-ci-discord-webhook/master/send.sh
     - chmod +x send.sh
