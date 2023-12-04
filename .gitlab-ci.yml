@@ -37,3 +37,6 @@ deploy-job:
     - npm install
     - npm run preview &
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
+  needs:
+    - build-job
+    - test-job
