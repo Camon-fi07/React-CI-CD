@@ -12,6 +12,8 @@ build-job:
   script:
     - npm install
     - npm run build
+  after_script:
+    - 'curl -X POST -H "Content-Type: application/json" -d {"content":"Deployment finished: $CI_COMMIT_REF_NAME ($CI_COMMIT_SHORT_SHA)"} https://discord.com/api/webhooks/1181227021163040818/sKPSiLJRfNUGswoa7HuBwZ1HiSIf7j7lidtKNN9j0SP_mjCjboExv70ARh5Ypom6rCVg'
   artifacts:
     paths:
       - dist/
@@ -25,6 +27,8 @@ lint-test-job:
   script:
     - npm install
     - npm run lint
+   after_script:
+    - 'curl -X POST -H "Content-Type: application/json" -d {"content":"Deployment finished: $CI_COMMIT_REF_NAME ($CI_COMMIT_SHORT_SHA)"} https://discord.com/api/webhooks/1181227021163040818/sKPSiLJRfNUGswoa7HuBwZ1HiSIf7j7lidtKNN9j0SP_mjCjboExv70ARh5Ypom6rCVg'
 
 deploy-job:
   stage: deploy
@@ -33,3 +37,5 @@ deploy-job:
   script:
     - npm install
     - npm run preview
+   after_script:
+    - 'curl -X POST -H "Content-Type: application/json" -d {"content":"Deployment finished: $CI_COMMIT_REF_NAME ($CI_COMMIT_SHORT_SHA)"} https://discord.com/api/webhooks/1181227021163040818/sKPSiLJRfNUGswoa7HuBwZ1HiSIf7j7lidtKNN9j0SP_mjCjboExv70ARh5Ypom6rCVg'
