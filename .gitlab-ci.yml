@@ -33,4 +33,4 @@ deploy-job:
     - ts
   script:
     - npm install
-    - npm preview
+    - npm run preview
