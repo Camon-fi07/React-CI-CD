@@ -3,6 +3,9 @@ stages:
   - test
   - deploy
 
+variables:
+  DISCORD_WEBHOOK: "https://discord.com/api/webhooks/1181227021163040818/sKPSiLJRfNUGswoa7HuBwZ1HiSIf7j7lidtKNN9j0SP_mjCjboExv70ARh5Ypom6rCVg"
+
 build-job:
   stage: build
   image: node:latest
@@ -33,7 +36,5 @@ deploy-job:
   script:
     - npm install
     - npm run preview &
-    - apk add --update git curl
-    - wget https://raw.githubusercontent.com/DiscordHooks/gitlab-ci-discord-webhook/master/send.sh
-    - chmod +x send.sh
-    - /bin/ash ./send.sh success $WEBHOOK_URL
+    - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
+
