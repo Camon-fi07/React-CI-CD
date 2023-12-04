@@ -35,6 +35,9 @@ deploy-job:
     - deploy
   script:
     - npm install
-    - npm run preview &
-    - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
-
+    - npm run preview
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
+  after_script:
+    - echo "Environment Status: $CI_ENVIRONMENT_STATUS"
