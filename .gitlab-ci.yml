@@ -5,6 +5,8 @@ stages:
 build-job:
   stage: build
   script:
+    - node -v
+    - npm -v
     - npm install
     - npm run build
 
