@@ -5,6 +5,9 @@ stages:
 build-job:
   stage: build
   image: node:latest
+  tags:
+    - react
+    - ts
   script:
     - npm install
     - npm run build
