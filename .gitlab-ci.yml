@@ -30,5 +30,3 @@ deploy-job:
   scripts:
     - npm install
     - npm run deploy
-  only:
-    - master
