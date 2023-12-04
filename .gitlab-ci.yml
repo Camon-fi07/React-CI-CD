@@ -38,6 +38,6 @@ deploy-job:
     - npm run preview
   environment:
     name: review/$CI_COMMIT_REF_SLUG
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
+    url: "https://$CI_ENVIRONMENT_SLUG.example.com"
   after_script:
-    - echo "Environment Status: $CI_ENVIRONMENT_STATUS"
+    - echo "Environment Status: $CI_ENVIRONMENT_STATUS "
