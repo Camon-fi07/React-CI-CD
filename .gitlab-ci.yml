@@ -5,6 +5,7 @@ stages:
 build-job:
   stage: build
   script:
+    - npm install
     - npm run build
 
 lint-test-job:
