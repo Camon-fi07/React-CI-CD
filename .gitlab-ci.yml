@@ -19,6 +19,7 @@ build-job:
     changes:
       - "src/"
   script:
+    - echo "Start build"
     - npm install
     - npm run build
   artifacts:
@@ -32,6 +33,7 @@ lint-test-job:
     - react
     - ts
   script:
+    - echo "Lint"
     - npm install
     - npm run lint
 
