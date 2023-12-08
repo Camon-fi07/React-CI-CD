@@ -14,7 +14,7 @@ build-job:
   extends: .install
   only:
     changes:
-      - "src"
+      - "src/"
   tags:
     - react
     - ts
@@ -42,8 +42,9 @@ deploy-job:
     - deploy
   only:
     - master
-  variables:
-    - $DISCORD_WEBHOOK!=null
+  rules:
+    exists:
+      - "$DISCORD_WEBHOOK"
   script:
     - npm install
     - npm run preview &
