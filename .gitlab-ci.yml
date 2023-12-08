@@ -3,9 +3,6 @@ stages:
   - test
   - deploy
 
-variables:
-  DISCORD_WEBHOOK: "https://discord.com/api/webhooks/1181227021163040818/sKPSiLJRfNUGswoa7HuBwZ1HiSIf7j7lidtKNN9j0SP_mjCjboExv70ARh5Ypom6rCVg"
-
 build-job:
   stage: build
   image: node:latest
