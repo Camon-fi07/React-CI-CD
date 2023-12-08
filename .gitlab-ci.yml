@@ -46,7 +46,8 @@ deploy-job:
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   rules:
     - exists:
-      - '$DISCORD_WEBHOOK'
+      - $DISCORD_WEBHOOK
+    - exists:
+      - $CI_COMMIT_BRANCH == "master"
   needs:
-    - build-job
     - lint-test-job
