@@ -12,9 +12,6 @@ stages:
 build-job:
   stage: build
   extends: .install
-  only:
-    changes:
-      - "src/"
   tags:
     - react
     - ts
@@ -47,5 +44,8 @@ deploy-job:
   rules:
     - exists:
       - $DISCORD_WEBHOOK
+    - exists:
+      - $CI_COMMIT_BRANCH == "master"
   needs:
     - lint-test-job
+    - build-job
