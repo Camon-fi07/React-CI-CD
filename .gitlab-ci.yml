@@ -5,13 +5,13 @@ stages:
 
 .install:
   script: npm install
+  image: node:latest
   stage: install
 
 
 build-job:
   stage: build
   extends: .install
-  image: node:latest
   tags:
     - react
     - ts
@@ -23,7 +23,6 @@ build-job:
 lint-test-job:
   stage: test
   extends: .install
-  image: node:latest
   tags:
     - react
     - ts
