@@ -7,16 +7,20 @@ stages:
 .install:
   image: node:latest
   stage: install
-  script: npm install
 
 
 build-job:
   stage: build
   extends: .install
+  only:
+    changes:
+      - "src"
   tags:
     - react
     - ts
-  script: npm run build
+  script:
+    - npm install
+    - npm run build
   artifacts:
     paths:
       - dist/
@@ -27,14 +31,21 @@ lint-test-job:
   tags:
     - react
     - ts
-  script: npm run lint
+  script:
+    - npm install
+    - npm run lint
 
 deploy-job:
   stage: deploy
   extends: .install
   tags:
     - deploy
+  only:
+    - master
+  variables:
+    - $DISCORD_WEBHOOK!=null
   script:
+    - npm install
     - npm run preview &
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   needs:
