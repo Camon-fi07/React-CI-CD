@@ -46,4 +46,3 @@ deploy-job:
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   needs:
     - lint-test-job
-    - build-job
