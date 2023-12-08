@@ -3,35 +3,38 @@ stages:
   - test
   - deploy
 
+.install:
+  script: npm install
+  stage: install
+
+
 build-job:
   stage: build
+  extends: .install
   image: node:latest
   tags:
     - react
     - ts
-  script:
-    - npm install
-    - npm run build
+  script: npm run build
   artifacts:
     paths:
       - dist/
 
 lint-test-job:
   stage: test
+  extends: .install
   image: node:latest
   tags:
     - react
     - ts
-  script:
-    - npm install
-    - npm run lint
+  script: npm run lint
 
 deploy-job:
   stage: deploy
+  extends: .install
   tags:
     - deploy
   script:
-    - npm install
     - npm run preview &
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   needs:
