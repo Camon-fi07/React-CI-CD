@@ -61,12 +61,14 @@ rollback-job:
   tags:
     - deploy
   script:
-    - echo "Rollback to the previous successful build"
-    - mv dist/backup/* dist/
+    - $PREVIOUS_TAG = git describe --abbrev=0 --tags HEAD^
+    - git checkout $PREVIOUS_TAG
+    - npm install
+    - npm run preview &
+    - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Rollback job completed!"}'' $DISCORD_WEBHOOK'
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
-    - exists:
-        - dist/backup/
+      when: manual
   needs:
     - deploy-job
 
