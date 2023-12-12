@@ -48,7 +48,7 @@ deploy-job:
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
     - exists:
-        - $DISCORD_WEBHOOK
+      - $DISCORD_WEBHOOK
   needs:
     - lint-test-job
 # releases:
