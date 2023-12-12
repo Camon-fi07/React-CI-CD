@@ -45,7 +45,6 @@ deploy-job:
     - deploy
   script:
     - npm install
-    - mv dist dist/backup
     - npm run preview &
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   rules:
