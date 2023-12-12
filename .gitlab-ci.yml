@@ -3,6 +3,7 @@ stages:
   - build
   - test
   - deploy
+  - rollback
   - release
 
 .install:
@@ -44,6 +45,7 @@ deploy-job:
     - deploy
   script:
     - npm install
+    - mv dist dist/backup
     - npm run preview &
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   rules:
@@ -52,6 +54,21 @@ deploy-job:
         - $DISCORD_WEBHOOK
   needs:
     - lint-test-job
+
+rollback-job:
+  stage: rollback
+  extends: .install
+  tags:
+    - deploy
+  script:
+    - echo "Rollback to the previous successful build"
+    - mv dist/backup/* dist/
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - exists:
+        - dist/backup/
+  needs:
+    - deploy-job
 
 release_job:
   stage: release
