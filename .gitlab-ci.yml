@@ -43,9 +43,10 @@ deploy-job:
   extends: .install
   tags:
     - deploy
+    - linux
   script:
     - npm install
-    - npm run preview &
+    - npm run preview
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
@@ -59,6 +60,7 @@ rollback-job:
   extends: .install
   tags:
     - deploy
+    - linux
   script:
     - $PREVIOUS_TAG = git describe --abbrev=0 --tags HEAD^
     - git checkout $PREVIOUS_TAG
