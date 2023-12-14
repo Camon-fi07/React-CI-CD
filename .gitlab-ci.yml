@@ -3,8 +3,8 @@ stages:
   - build
   - test
   - deploy
-  - rollback
-  - release
+  # - rollback
+  # - release
 
 .install:
   image: node:latest
@@ -47,6 +47,7 @@ deploy-job:
   script:
     - npm install
     - npm run preview
+  after_script:
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
@@ -54,37 +55,36 @@ deploy-job:
         - $DISCORD_WEBHOOK
   needs:
     - lint-test-job
+# rollback-job:
+#   stage: rollback
+#   extends: .install
+#   tags:
+#     - deploy
+#     - linux
+#   script:
+#     - $PREVIOUS_TAG = git describe --abbrev=0 --tags HEAD^
+#     - git checkout $PREVIOUS_TAG
+#     - npm install
+#     - npm run preview &
+#     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Rollback job completed!"}'' $DISCORD_WEBHOOK'
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "master"'
+#       when: manual
+#   needs:
+#     - deploy-job
 
-rollback-job:
-  stage: rollback
-  extends: .install
-  tags:
-    - deploy
-    - linux
-  script:
-    - $PREVIOUS_TAG = git describe --abbrev=0 --tags HEAD^
-    - git checkout $PREVIOUS_TAG
-    - npm install
-    - npm run preview &
-    - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Rollback job completed!"}'' $DISCORD_WEBHOOK'
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: manual
-  needs:
-    - deploy-job
-
-release_job:
-  stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
-    - if: '$CI_COMMIT_BRANCH == "master"'
-  script:
-    - echo "running release_job"
-  release:
-    tag_name: "v0.$CI_PIPELINE_IID"
-    description: "$CI_PIPELINE_IID"
-    ref: "$CI_COMMIT_SHA"
-  needs:
-    - deploy-job
+# release_job:
+#   stage: release
+#   image: registry.gitlab.com/gitlab-org/release-cli:latest
+#   rules:
+#     - if: $CI_COMMIT_TAG
+#       when: never
+#     - if: '$CI_COMMIT_BRANCH == "master"'
+#   script:
+#     - echo "running release_job"
+#   release:
+#     tag_name: "v0.$CI_PIPELINE_IID"
+#     description: "$CI_PIPELINE_IID"
+#     ref: "$CI_COMMIT_SHA"
+#   needs:
+#     - deploy-job
