@@ -44,6 +44,10 @@ deploy-job:
   tags:
     - deploy
     - linux
+  before_script:
+    - apt-get update -qy
+    - apt-get install -y nodejs npm
+    - npm install -g your-package
   script:
     - npm install
     - npm run preview
