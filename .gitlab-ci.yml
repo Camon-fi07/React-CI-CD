@@ -12,7 +12,7 @@ stages:
 
 build-job:
   stage: build
-  # extends: .install
+  extends: .install
   tags:
     - react
     - ts
@@ -40,7 +40,7 @@ lint-test-job:
 
 deploy-job:
   stage: deploy
-  extends: .install
+  # extends: .install
   tags:
     - deploy
     - linux
