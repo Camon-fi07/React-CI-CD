@@ -12,7 +12,7 @@ stages:
 
 build-job:
   stage: build
-  extends: .install
+  # extends: .install
   tags:
     - react
     - ts
