@@ -55,7 +55,6 @@ rollback-job:
   stage: rollback
   tags:
     - deploy
-    - linux
   script:
     - $PREVIOUS_TAG = $(git describe --abbrev=0 --tags HEAD)^
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
