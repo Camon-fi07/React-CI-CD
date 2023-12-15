@@ -17,8 +17,8 @@ build-job:
     - react
     - ts
   script:
-    - echo "Start build"
-    - docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - echo "Start build $CI_REGISTRY_USER"
+    - docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/test_project:$CI_COMMIT_REF_NAME
     - docker push $CI_REGISTRY_IMAGE/test_project:$CI_COMMIT_REF_NAME
     # - npm install
