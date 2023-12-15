@@ -36,7 +36,7 @@ lint-test-job:
     - npm run lint
   only:
     changes:
-      - "src/"
+      - "src/**/*"
 
 deploy-job:
   stage: deploy
