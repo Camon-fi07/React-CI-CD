@@ -1,0 +1,13 @@
+lint-test-job:
+  stage: test
+  extends: .node_image
+  tags:
+    - react
+    - ts
+  script:
+    - echo "Lint"
+    - npm install
+    - npm run lint
+  only:
+    changes:
+      - "src/**/*"
