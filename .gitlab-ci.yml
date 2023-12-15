@@ -1,7 +1,6 @@
 stages:
-  - install
   - build
-  - test
+  - linter
   - deploy
   - release
   - rollback

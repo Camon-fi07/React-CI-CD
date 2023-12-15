@@ -1,5 +1,5 @@
 lint-test-job:
-  stage: test
+  stage: linter
   extends: .node_image
   tags:
     - react
