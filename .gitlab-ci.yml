@@ -36,9 +36,9 @@ lint-test-job:
   tags:
     - react
     - ts
-  # script:
-  #   - echo "Lint"
-  #   - npm run lint
+  script:
+    - echo "Lint"
+    # - npm run lint
   only:
     changes:
       - "src/**/*"
