@@ -6,18 +6,14 @@ stages:
   - rollback
   - release
 
-.login:
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-
 build-job:
   stage: build
-  extends: .login
   tags:
     - react
     - ts
   script:
     - echo "Start build $CI_REGISTRY_USER"
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/test_project:v0.$CI_PIPELINE_IID .
     - docker push $CI_REGISTRY_IMAGE/test_project:v0.$CI_PIPELINE_IID
   artifacts:
@@ -40,10 +36,10 @@ lint-test-job:
 
 deploy-job:
   stage: deploy
-  extends: .login
   tags:
     - deploy
   script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker stop $(docker ps -a -q)
     - docker pull $CI_REGISTRY_IMAGE/test_project:v0.$CI_PIPELINE_IID
     - docker run -d -p 80:80 $CI_REGISTRY_IMAGE/test_project:v0.$CI_PIPELINE_IID
@@ -57,12 +53,12 @@ deploy-job:
 
 rollback-job:
   stage: rollback
-  extends: .login
   tags:
     - deploy
     - linux
   script:
     - $PREVIOUS_TAG = $(git describe --abbrev=0 --tags HEAD)^
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker stop $(docker ps -a -q)
     - docker pull $CI_REGISTRY_IMAGE/test_project:$PREVIOUS_TAG
     - docker run -d -p 80:80 $CI_REGISTRY_IMAGE/test_project:$PREVIOUS_TAG
