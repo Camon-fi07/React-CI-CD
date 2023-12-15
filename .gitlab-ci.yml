@@ -16,13 +16,13 @@ build-job:
   tags:
     - react
     - ts
-  only:
-    changes:
-      - "src/"
   script:
     - echo "Start build"
-    - npm install
-    - npm run build
+    - docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/test_project:$CI_COMMIT_REF_NAME
+    - docker push $CI_REGISTRY_IMAGE/test_project:$CI_COMMIT_REF_NAME
+    # - npm install
+    # - npm run build
   artifacts:
     paths:
       - dist/
@@ -37,16 +37,19 @@ lint-test-job:
     - echo "Lint"
     - npm install
     - npm run lint
+  only:
+    changes:
+      - "src/"
 
 deploy-job:
   stage: deploy
   # extends: .install
   tags:
     - deploy
-    - linux
   script:
-    - npm install
-    - npm run preview
+    - docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE/test_project
+    - docker run -d test_project -p 80:80 $CI_REGISTRY_IMAGE/test_project:$CI_COMMIT_REF_NAME
   after_script:
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   rules:
@@ -54,7 +57,7 @@ deploy-job:
     - exists:
         - $DISCORD_WEBHOOK
   needs:
-    - lint-test-job
+    - build-job
 # rollback-job:
 #   stage: rollback
 #   extends: .install
