@@ -19,7 +19,7 @@ build-job:
   script:
     - echo "Start build $CI_REGISTRY_USER"
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/test_project:$CI_COMMIT_REF_NAME -t $CI_REGISTRY_IMAGE/test_project:latest .
+    - docker build -t $CI_REGISTRY_IMAGE/test_project:latest .
     - docker push $CI_REGISTRY_IMAGE/test_project:$CI_COMMIT_REF_NAME
   artifacts:
     paths:
@@ -44,7 +44,6 @@ deploy-job:
   # extends: .install
   tags:
     - deploy
-    - linux
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE/test_project:latest
