@@ -10,6 +10,7 @@ stages:
   image: node:latest
   script:
     - npm install
+    - echo "install"
 
 build-job:
   stage: build
