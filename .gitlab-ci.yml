@@ -6,9 +6,10 @@ stages:
   - release
   - rollback
 
-.master-check:
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+.npm-install:
+  image: node:latest
+  script:
+    - npm install
 
 build-job:
   stage: build
@@ -26,13 +27,12 @@ build-job:
 
 lint-test-job:
   stage: test
-  image: node:latest
+  extends: .npm-install
   tags:
     - react
     - ts
   script:
     - echo "Lint"
-    - npm install
     - npm run lint
   only:
     changes:
@@ -42,7 +42,6 @@ deploy-job:
   stage: deploy
   tags:
     - deploy
-  extends: .master-check
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker stop $(docker ps -a -q)
@@ -59,7 +58,6 @@ rollback-job:
   stage: rollback
   tags:
     - deploy
-  extends: .master-check
   script:
     - $PREVIOUS_TAG = $(git describe --abbrev=0 --tags HEAD^)
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
