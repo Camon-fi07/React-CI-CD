@@ -3,8 +3,8 @@ stages:
   - build
   - test
   - deploy
-  - rollback
   - release
+  - rollback
 
 build-job:
   stage: build
