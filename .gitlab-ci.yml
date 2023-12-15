@@ -10,8 +10,8 @@ stages:
   image: node:latest
 
 include:
-  - local build.yml
-  - local linter.yml
-  - local deploy.yml
-  - local release.yml
-  - local rollback.yml
+  - local: build.yml
+  - local: linter.yml
+  - local: deploy.yml
+  - local: release.yml
+  - local: rollback.yml
