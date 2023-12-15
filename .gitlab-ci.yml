@@ -3,23 +3,22 @@ stages:
   - build
   - test
   - deploy
-  # - rollback
-  # - release
+  - rollback
+  - release
 
-.install:
-  image: node:latest
-  stage: install
+.login:
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build-job:
   stage: build
-  extends: .install
+  extends: .login
   tags:
     - react
     - ts
   script:
     - echo "Start build $CI_REGISTRY_USER"
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/test_project:latest .
+    - docker build -t $CI_REGISTRY_IMAGE/react_app:v0.$CI_PIPELINE_IID -t $CI_REGISTRY_IMAGE/test_project:latest .
     - docker push $CI_REGISTRY_IMAGE/test_project:latest
   artifacts:
     paths:
@@ -27,7 +26,7 @@ build-job:
 
 lint-test-job:
   stage: test
-  extends: .install
+  image: node:latest
   tags:
     - react
     - ts
@@ -41,14 +40,13 @@ lint-test-job:
 
 deploy-job:
   stage: deploy
-  # extends: .install
+  extends: .login
   tags:
     - deploy
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker stop $(docker ps -a -q)
     - docker pull $CI_REGISTRY_IMAGE/test_project:latest
     - docker run -d -p 80:80 $CI_REGISTRY_IMAGE/test_project:latest
-  after_script:
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
@@ -56,36 +54,38 @@ deploy-job:
         - $DISCORD_WEBHOOK
   needs:
     - build-job
-# rollback-job:
-#   stage: rollback
-#   extends: .install
-#   tags:
-#     - deploy
-#     - linux
-#   script:
-#     - $PREVIOUS_TAG = git describe --abbrev=0 --tags HEAD^
-#     - git checkout $PREVIOUS_TAG
-#     - npm install
-#     - npm run preview &
-#     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Rollback job completed!"}'' $DISCORD_WEBHOOK'
-#   rules:
-#     - if: '$CI_COMMIT_BRANCH == "master"'
-#       when: manual
-#   needs:
-#     - deploy-job
 
-# release_job:
-#   stage: release
-#   image: registry.gitlab.com/gitlab-org/release-cli:latest
-#   rules:
-#     - if: $CI_COMMIT_TAG
-#       when: never
-#     - if: '$CI_COMMIT_BRANCH == "master"'
-#   script:
-#     - echo "running release_job"
-#   release:
-#     tag_name: "v0.$CI_PIPELINE_IID"
-#     description: "$CI_PIPELINE_IID"
-#     ref: "$CI_COMMIT_SHA"
-#   needs:
-#     - deploy-job
+rollback-job:
+  stage: rollback
+  extends: .login
+  tags:
+    - deploy
+    - linux
+  script:
+    - $PREVIOUS_TAG = git describe --abbrev=0 --tags HEAD^
+    - docker stop $(docker ps -a -q)
+    - docker pull $CI_REGISTRY_IMAGE/test_project:$PREVIOUS_TAG
+    - docker run -d -p 80:80 $CI_REGISTRY_IMAGE/test_project:$PREVIOUS_TAG
+    - git checkout $PREVIOUS_TAG
+    - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Rollback job completed!"}'' $DISCORD_WEBHOOK'
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+  needs:
+    - deploy-job
+
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master"'
+  script:
+    - echo "running release_job"
+  release:
+    tag_name: "v0.$CI_PIPELINE_IID"
+    description: "$CI_PIPELINE_IID"
+    ref: "$CI_COMMIT_SHA"
+  needs:
+    - deploy-job
