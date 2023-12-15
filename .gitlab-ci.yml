@@ -69,7 +69,9 @@ rollback-job:
     - git checkout $PREVIOUS_TAG
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Rollback job completed!"}'' $DISCORD_WEBHOOK'
   rules:
-    when: manual
+    - when: manual
+    - exists:
+        - $DISCORD_WEBHOOK
   needs:
     - deploy-job
 
