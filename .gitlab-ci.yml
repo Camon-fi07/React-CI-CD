@@ -18,7 +18,7 @@ build-job:
     - ts
   script:
     - echo "Start build $CI_REGISTRY_USER"
-    - docker build -t $CI_REGISTRY_IMAGE/react_app:v0.$CI_PIPELINE_IID .
+    - docker build -t $CI_REGISTRY_IMAGE/test_project:v0.$CI_PIPELINE_IID .
     - docker push $CI_REGISTRY_IMAGE/test_project:v0.$CI_PIPELINE_IID
   artifacts:
     paths:
