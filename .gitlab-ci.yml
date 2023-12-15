@@ -49,6 +49,7 @@ deploy-job:
     - docker run -d -p 80:80 $CI_REGISTRY_IMAGE/test_project:v0.$CI_PIPELINE_IID
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Deployment job completed!"}'' $DISCORD_WEBHOOK'
   rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
     - exists:
         - $DISCORD_WEBHOOK
   needs:
@@ -68,8 +69,6 @@ rollback-job:
     - 'curl -X POST -H "Content-type: application/json" --data ''{"content":"Rollback job completed!"}'' $DISCORD_WEBHOOK'
   rules:
     - when: manual
-    - exists:
-        - $DISCORD_WEBHOOK
   needs:
     - deploy-job
 
