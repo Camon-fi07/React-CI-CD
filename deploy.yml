@@ -13,4 +13,4 @@ deploy-job:
     - exists:
         - $DISCORD_WEBHOOK
   needs:
-    - build-job
+    - docker-build-job
