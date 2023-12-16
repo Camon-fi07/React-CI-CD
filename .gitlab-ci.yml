@@ -1,5 +1,6 @@
 stages:
   - build
+  - docker-build
   - linter
   - deploy
   - release

@@ -1,5 +1,21 @@
 build-job:
   stage: build
+  extends: .node_image
+  tags:
+    - react
+    - ts
+  script:
+    - echo "Start build $CI_REGISTRY_USER"
+    - npm install
+    - npm run build
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "master"'
+  artifacts:
+    paths:
+      - dist/
+
+docker-build-job:
+  stage: docker-build
   tags:
     - react
     - ts
@@ -8,6 +24,8 @@ build-job:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE/test_project:v0.$CI_PIPELINE_IID .
     - docker push $CI_REGISTRY_IMAGE/test_project:v0.$CI_PIPELINE_IID
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
   artifacts:
     paths:
       - dist/
